@@ -103,7 +103,8 @@ def user_login():
     if(res[0]["password"] != password):
         client.close()
         return jsonify({}),400
-    return jsonify({}),200
+    user_id = res[0]["user_id"]
+    return jsonify({"user_id":user_id}),200
 
 
 if __name__ == '__main__':
