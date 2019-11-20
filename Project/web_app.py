@@ -60,12 +60,34 @@ def seek_blood():
     seek.insert_one(data)
     return jsonify({}),200
 
-
-
-
-
-
-
+@app.route("/register",methods=["POST"])
+def register_user():
+    sex = request.json["sex"]
+    user_name = request.json["user_name"]
+    DOB = request.json["DOB"]
+    address = request.json["address"]
+    email = request.json["email"]
+    blood_group = request.json["blood_group"]
+    password = request.json["password"]
+    client = MongoClient()
+    db = client["blood_bank_db"]
+    user_info = db.person_details_table
+    res = list(user_info.find())
+    for i in res:
+        if(i["email"] == email):
+            client.close()
+            return jsonify({}),401
+    max_id = -1
+    for i in res:
+        user_id = int(i["user_id"].split("BLOOD")[1])
+        if(user_id > max_id):
+            max_id = user_id
+    max_id = max_id + 1
+    user_id = "BLOOD" + str(max_id)
+    data = {"user_id":user_id,"name":user_name,"sex":sex,"DOB":DOB,"address":address,"email":email,"blood_group":blood_group,"password":password}
+    user_info.insert_one(data)
+    client.close()
+    return jsonify({}),200
 
 if __name__ == '__main__':
     app.run("0.0.0.0",port=5000,debug=True)
