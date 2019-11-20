@@ -95,7 +95,7 @@
     <script>
     function handle_submit()
     {
-        alert("Values loaded");
+        //alert("Values loaded");
         var blood_group = document.getElementById("bg_item").value;
         var date_item = document.getElementById("date_item").value;
         var time_item = document.getElementById("time_item").value;
@@ -116,7 +116,7 @@
         req.send(data);
         req.onload = function()
         {
-            alert("Hi");
+            //alert("Hi");
             if(req.status == 200)
             {
                 alert("Donation Request Accepted");

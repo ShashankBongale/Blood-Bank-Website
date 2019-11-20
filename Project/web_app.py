@@ -1,6 +1,7 @@
 from flask import Flask,jsonify,request,abort
 from pymongo import MongoClient
 import requests
+import datetime
 from datetime import date
 
 app = Flask(__name__)
@@ -39,6 +40,29 @@ def donate_blood():
     data = {"blood_id":blood_id,"user_id":user_id,"blood_group":bg,"date":date,"time":time,"info":info,"status":"in"}
     donar.insert_one(data)
     return jsonify({}),200
+
+@app.route("/seek",methods=["POST"])
+def seek_blood():
+    print(request.json)
+    user_id = request.json["user_id"]
+    quantity = request.json["quantity"]
+    info = request.json["info"]
+    blood_group = request.json["blood_group"]
+    client = MongoClient()
+    db = client["blood_bank_db"]
+    seek = db.seek_table
+    now = datetime.datetime.now()
+    day = str(now.day)
+    month = str(now.month)
+    year = str(now.year)
+    date = day + "/" + month + "/" + year
+    data = {"user_id":user_id,"quantity":quantity,"info":info,"blood_group":blood_group,"status":"pending","date":date}
+    seek.insert_one(data)
+    return jsonify({}),200
+
+
+
+
 
 
 
