@@ -130,7 +130,7 @@
         var info = document.getElementById("info_item").value;
         var d = {}
         d["blood_group"] = blood_group;
-        d["user_id"] = "BLOOD6"; //should be taken from cookie
+        d["user_id"] = document.getElementById("user_info").innerHTML; //should be taken from cookie
         d["date"] = valid_date;
         d["time"] = time_item;
         d["info"] = info;
