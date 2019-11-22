@@ -1,6 +1,6 @@
 <!--Homepage of Soulo Ride Website-->
 
-<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="homepage_css.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!--Webpage Starts-->
@@ -10,7 +10,7 @@
         <!--Document Level Styling if needed-->
         <style>
         /*Styling if any goes here*/
-        
+
         </style>
         <title>Seva | Blood Bank</title><!--Title of the webpage-->
     </head>
@@ -22,6 +22,8 @@
         <div class="navbar">
                 <div class="topnav">
                 <img src="../Images/LOGO1.jpg" class="logo" />
+                <b class="log" id="user_info">&nbsp;&nbsp;SEVA</b>
+
                 <ul class="nav">
                     <li><a href="home.html">Home</a></li>
                     <li><a href="donate.html">Donate</a></li>
@@ -29,14 +31,14 @@
                     <li><a href="testimonials.html">Testimonials</a></li>
                     <li><a href="faq.html"> FAQs </a></li>
                     <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="login.html">Login/SignUp</a></li>
+                    <li><a href="login.html" id="login">Login/SignUp</a></li>
                 </ul>
                 </div>
                 <div class="animtext"><h1 class="textonbgr" id="text1">Save lives, donate blood.</h1></div>
                 <div class="rws">
                 <center>
-                <form method="link" action="chatbot.html">
-                    <input type="submit" value="Check your health" class="reg">
+                <form method="link" action="predict_donor.html">
+                    <input type="submit" value="Predict Donor" class="reg">
                 </form>
                 </center>
                 </div>
@@ -45,6 +47,34 @@
 
 <!--Footer Section Starts Here
 Footer Section Ends Here-->
-    </body>
+<script>
+window.onload = function()
+{
+    var cookie = document.cookie;
+    var splitStr = cookie.split("=");
+    if(splitStr[1] == "nothing")
+    {
+        //alert("Please Login");
+        //window.location.replace("login.html");
+    }
+    else
+    {
+        var user_dom = document.getElementById("user_info");
+        user_dom.innerHTML = splitStr[1];
+        var login_dom = document.getElementById("login");
+        login_dom.innerHTML = "Logout";
+        login_dom.setAttribute("href","home.html");
+        login_dom.setAttribute("onclick","handle_logout()");
+    }
+}
+function handle_logout()
+{
+    document.cookie = "user_id" + "=" + "nothing" + ";";
+    alert("Successfully LoggegOut");
+    window.location.replace("home.html");
+
+}
+</script>
+</body>
 <!--Body Ends-->
 </html>

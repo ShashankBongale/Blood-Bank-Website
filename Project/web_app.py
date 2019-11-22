@@ -3,7 +3,14 @@ from pymongo import MongoClient
 import requests
 import datetime
 from datetime import date
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn import svm
+import warnings
+warnings.filterwarnings('ignore')
 
+check_var = 1
 app = Flask(__name__)
 @app.after_request
 def after_request(response):
@@ -17,6 +24,9 @@ def after_request(response):
 def trial_connection():
     trial_dict = dict()
     trial_dict["trial"] = "ok"
+    global check_var
+    check_var = check_var + 1
+    print(check_var)
     return jsonify(trial_dict),200
 
 @app.route("/donate",methods=["POST"])
@@ -106,6 +116,42 @@ def user_login():
     user_id = res[0]["user_id"]
     return jsonify({"user_id":user_id}),200
 
+@app.route("/predict",methods=["POST"])
+def predict_donor():
+    #code to input
+    msld = int(request.json["msld"])
+    td = int(request.json["td"])
+    tv = int(request.json["tv"])
+    msfd = int(request.json["msfd"])
+    df = pd.read_csv('train.csv', index_col=False)
+    df.columns = ['id','months_since_last_donation','num_donations','vol_donations','months_since_first_donation', 'class']
+    df = df.drop(['id'], axis=1)
+
+    #Enter test values in the below line here
+    test = pd.DataFrame(columns=['months_since_last_donation','num_donations','vol_donations','months_since_first_donation'], data=[[msld,td,tv,msfd]])
+
+    df["class"] = df["class"].astype(int)
+
+    Y_train = df["class"]
+
+    X_train = df.drop(labels = ["class"],axis = 1)
+
+    sc = StandardScaler()
+    X_train_scaled = sc.fit_transform(X_train)
+    test_scaled = sc.transform(test)
+
+    clf = svm.SVC(kernel='linear', C = 1.0, probability=True)
+    clf.fit(X_train_scaled,Y_train)
+
+    predictions = clf.predict_proba(test_scaled)
+    predictions = predictions[:,1]
+    d = dict()
+    if(predictions[0]>0.24):
+        output = "Yes, Will donate"
+    else:
+        output = "No, Will not donate"
+    d["output"] = output
+    return jsonify(d),200
 
 if __name__ == '__main__':
     app.run("0.0.0.0",port=5000,debug=True)
