@@ -1,6 +1,6 @@
 <!--Homepage of Soulo Ride Website-->
 
-<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="faq_css.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!--Webpage Starts-->
@@ -21,14 +21,17 @@
 		<div class="navbar">
 			<div class="topnav">
 				<img src="../Images/LOGO1.jpg" class="logo" />
-				<ul class="nav">
+				<b class="log" id="user_info">&nbsp;&nbsp;SEVA</b>
+
+				<ul class="nav" style="margin-left:-8%">
 					<li><a href="home.html">Home</a></li>
 					<li><a href="donate.html">Donate</a></li>
 					<li><a href="seek.html">Seek</a></li>
+					<li><a href="profile.html">Profile</a></li>
 					<li><a href="testimonials.html">Testimonials</a></li>
-					<li><a href="faq.html"> FAQs </a></li>		
+					<li><a href="faq.html"> FAQs </a></li>
 					<li><a href="contact.html">Contact Us</a></li>
-					<li><a href="login.html">Login/SignUp</a></li>
+					<li><a href="login.html" id = "login">Login/SignUp</a></li>
 				</ul>
 			</div>
 			<!--FAQ's Section Starts Here-->
@@ -50,42 +53,61 @@
 		    	</div>
 
 			<button class="accordion">
-				Are blood donors paid?	
+				Are blood donors paid?
 			</button>
 			<div class="panel">
 			<p>No. Blood collected for transfusion in India is collected from volunteer blood donors.</p>
 			</div>
-	
+
 		    	<button class="accordion">
 				How badly is blood needed?
 			</button>
 		    	<div class="panel">
 		    	<p>Blood supplies vary depending on the region and time of year. As more restrictive donor criteria are necessary to protect the safety of the blood supply and as the donor population ages, the inventory levels are affected across the nation. If you are eligible, your blood donations are needed. The inventory levels of blood would be more consistently maintained if more of those who are eligible donate 1-2 times each year.</p>
 		    	</div>
-				
+
 		    	<button class="accordion">
 				Why are there often blood shortages?
 			</button>
 		    	<div class="panel">
 		    	<p>Most blood centers strive to maintain an optimum inventory level of a three-day supply. Due to unpredictable demands for trauma patients, the inventory fluctuates hourly. When the blood supply drops below a three-day level, blood centers begin alerting local donors to increase the inventory to a safe operating level.</p>
 		    	</div>
-				
+
 		    	<button class="accordion">
 				Are sterile supplies used?
 			</button>
 		    	<div class="panel">
 		    	<p>Based on AABB Standards and FDA regulations, all needles, tubing sets, collection bags and other donation supplies are sterile, used once, and discarded in the trash to protect the donor, the transfusion recipient, and the blood donor center staff.</p>
 		    	</div>
-				
+
 
 		    <script>
+			window.onload = function()
+			{
+			    var cookie = document.cookie;
+			    var splitStr = cookie.split("=");
+			    if(splitStr[1] == "nothing")
+			    {
+			        //alert("Please Login");
+			        //window.location.replace("login.html");
+			    }
+			    else
+			    {
+			        var user_dom = document.getElementById("user_info");
+			        user_dom.innerHTML = splitStr[1];
+			        var login_dom = document.getElementById("login");
+			        login_dom.innerHTML = "Logout";
+			        login_dom.setAttribute("href","home.html");
+			        login_dom.setAttribute("onclick","handle_logout()");
+			    }
+			}
 			var acc = document.getElementsByClassName("accordion");
 			var i;
                 	var faq = document.getElementById("faqsi");
                 	var value= 1500;
 			for (i = 0; i < acc.length; i++) {
 				acc[i].onclick = function(){
-                        
+
 				this.classList.toggle("active");
 				var panel = this.nextElementSibling;
 				if (panel.style.maxHeight) {
@@ -98,11 +120,11 @@
                             		value=value+200;
                             		faq.style.height =value+"px";
 						}
-                        
+
 					}
 				}
 		    </script>
-				
+
 
 <!--FAQ's Section Ends Here-->
         </div>

@@ -5,13 +5,24 @@ import datetime
 from datetime import date
 import pandas as pd
 import numpy as np
+import threading
 from sklearn.preprocessing import StandardScaler
 from sklearn import svm
 import warnings
+import time 
 warnings.filterwarnings('ignore')
 
 check_var = 1
 app = Flask(__name__)
+
+def handle_seek(userid):
+    time.sleep(60)
+    client = MongoClient()
+    db = client["blood_bank_db"]
+    seek = db.seek_table
+    seek.update({"user_id":userid},{"$set":{"status":"available"}})
+    client.close()
+
 @app.after_request
 def after_request(response):
   response.headers.add('Access-Control-Allow-Origin', '*')
@@ -58,9 +69,14 @@ def seek_blood():
     quantity = request.json["quantity"]
     info = request.json["info"]
     blood_group = request.json["blood_group"]
+    t1 = threading.Thread(target=handle_seek, args=(user_id,)) 
+    t1.start()
     client = MongoClient()
     db = client["blood_bank_db"]
     seek = db.seek_table
+    res = list(seek.find({"user_id":user_id,"status":"pending"}))
+    if(len(res) != 0):
+        return jsonify({}),400
     now = datetime.datetime.now()
     day = str(now.day)
     month = str(now.month)
@@ -68,6 +84,7 @@ def seek_blood():
     date = day + "/" + month + "/" + year
     data = {"user_id":user_id,"quantity":quantity,"info":info,"blood_group":blood_group,"status":"pending","date":date}
     seek.insert_one(data)
+    client.close()
     return jsonify({}),200
 
 @app.route("/register",methods=["POST"])
@@ -116,6 +133,28 @@ def user_login():
     user_id = res[0]["user_id"]
     return jsonify({"user_id":user_id}),200
 
+@app.route("/get_status",methods=["POST"])
+def get_status():
+    client = MongoClient()
+    db = client["blood_bank_db"]
+    seek = db.seek_table
+    print("request json",request.json)
+    user_id = request.json["user_id"]
+    res = list(seek.find({"user_id":user_id}))
+    d = dict()
+    if(len(res) != 0):
+        d["status"] = res[0]["status"]
+        d["blood_group"] = res[0]["blood_group"]
+        d["info"] = res[0]["info"]
+        d["quantity"] = res[0]["quantity"]
+    else:
+        d["status"] = "NA"
+        d["blood_group"] = "NA"
+        d["info"] = "NA"
+        d["quantity"] = "NA"
+    client.close()
+    return jsonify(d),200
+
 @app.route("/predict",methods=["POST"])
 def predict_donor():
     #code to input
@@ -152,6 +191,8 @@ def predict_donor():
         output = "No, Will not donate"
     d["output"] = output
     return jsonify(d),200
+
+
 
 if __name__ == '__main__':
     app.run("0.0.0.0",port=5000,debug=True)

@@ -1,6 +1,6 @@
 <!--Homepage of Soulo Ride Website-->
 
-<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="testimonials_css.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!--Webpage Starts-->
@@ -10,7 +10,7 @@
         <!--Document Level Styling if needed-->
         <style>
         /*Styling if any goes here*/
-        
+
         </style>
         <title>Seva | Blood Bank</title><!--Title of the webpage-->
     </head>
@@ -22,14 +22,17 @@
         <div class="navbar">
                 <div class="topnav">
                 <img src="../Images/LOGO1.jpg" class="logo" />
-                <ul class="nav">
+                <b class="log" id="user_info">&nbsp;&nbsp;SEVA</b>
+
+                <ul class="nav" style="margin-left:-8%">
                     <li><a href="home.html">Home</a></li>
                     <li><a href="donate.html">Donate</a></li>
                     <li><a href="seek.html">Seek</a></li>
+                    <li><a href="profile.html">Profile</a></li>
                     <li><a href="testimonials.html">Testimonials</a></li>
                     <li><a href="faq.html"> FAQs </a></li>
                     <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="login.html">Login/SignUp</a></li>
+                    <li><a href="login.html" id="login">Login/SignUp</a></li>
                 </ul>
                 </div>
         </div>
@@ -59,6 +62,27 @@
 				<i class="fa fa-quote-right" aria-hidden="true" style="size:10px; color:white; padding-left:85%; padding-top:2%;"></i>
 			</div>
         </div>
+        <script>
+        window.onload = function()
+        {
+            var cookie = document.cookie;
+            var splitStr = cookie.split("=");
+            if(splitStr[1] == "nothing")
+            {
+                //alert("Please Login");
+                //window.location.replace("login.html");
+            }
+            else
+            {
+                var user_dom = document.getElementById("user_info");
+                user_dom.innerHTML = splitStr[1];
+                var login_dom = document.getElementById("login");
+                login_dom.innerHTML = "Logout";
+                login_dom.setAttribute("href","home.html");
+                login_dom.setAttribute("onclick","handle_logout()");
+            }
+        }
+        </script>
 <!--Review Section Ends Here-->
 
 <!--Footer Section Starts Here
