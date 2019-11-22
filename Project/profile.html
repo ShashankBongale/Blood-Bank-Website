@@ -74,6 +74,7 @@ xhr.onreadystatechange=showStatus;
 xhr.open("POST","http://127.0.0.1:5000/get_status",true);
 xhr.setRequestHeader("Content-type", "application/json");
 var d = {}
+var flag_alert = 0;
 d["user_id"] = splitStr[1];
 //alert(d);
 xhr.send(JSON.stringify(d));
@@ -118,6 +119,11 @@ function showStatus()
     if(xhr.readyState==4 && xhr.status==200)
     {
         var data = JSON.parse(this.response);
+        if(data["status"] == "available" && flag_alert == 0)
+        {
+            flag_alert = 1;
+            alert("Status Changed");
+        }
         status_dom.innerHTML = data["status"];
         quantity_dom.innerHTML = data["quantity"];
         info_dom.innerHTML = data["info"];
